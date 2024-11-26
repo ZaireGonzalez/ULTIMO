@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISPOA - Sistema POS Agrícola</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eaf4e4;
+            color: #3a3a3a;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            text-align: center;
+            background-color: #6a9c48;
+            padding: 20px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin: 0;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            margin: 10px 0;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 300px;
+            margin: 0 auto;
+        }
+
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .table-container {
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .back-btn {
+            margin: 20px 0;
+            padding: 10px 20px;
+            background-color: #ff6347;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background-color: #e55342;
+        }
+
+        .module-box {
+            background-color: white;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 200px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .module-box button {
+            width: auto;
+            margin: 10px 0;
+        }
+
+        .module-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .logout-btn {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+
+        .logout-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Ocultar todo inicialmente */
+        #menu, .table-container, .logout-btn {
+            display: none;
+        }
+
+        /* Mostrar la pantalla de registro inicialmente */
+        #formularioRegistro {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>SISPOA</h1>
+    <h2>SISTEMA POS AGRÍCOLA</h2>
+</header>
+
+<!-- Formulario de Registro -->
+<div class="container" id="formularioRegistro">
+    <div class="form-container">
+        <h3>Formulario de Registro</h3>
+        <form id="registroForm" onsubmit="return registrarUsuario(event)">
+            <input type="text" id="nombre" placeholder="Nombre" required>
+            <input type="email" id="correo" placeholder="Correo Electrónico" required>
+            <input type="password" id="contraseña" placeholder="Contraseña" required>
+            <button type="submit">Registrar</button>
+        </form>
+    </div>
+</div>
+
+<!-- Menú de Navegación (cuadros) -->
+<div class="container" id="menu">
+    <button class="logout-btn" id="logoutButton" style="display: none;" onclick="cerrarSesion()">Cerrar Sesión</button>
+    <div class="module-container">
+        <div class="module-box">
+            <h4>Ventas</h4>
+            <button onclick="mostrarModulo('ventas')">Ver Ventas</button>
+        </div>
+        <div class="module-box">
+            <h4>Anulaciones</h4>
+            <button onclick="mostrarModulo('anulaciones')">Ver Anulaciones</button>
+        </div>
+        <div class="module-box">
+            <h4>Cierres</h4>
+            <button onclick="mostrarModulo('cierres')">Ver Cierres</button>
+        </div>
+        <div class="module-box">
+            <h4>Consulta Saldo</h4>
+            <button onclick="mostrarModulo('consultaSaldo')">Consultar Saldo</button>
+        </div>
+        <div class="module-box">
+            <h4>Peticiones</h4>
+            <button onclick="mostrarModulo('peticiones')">Ver Peticiones</button>
+        </div>
+        <div class="module-box">
+            <h4>Inventario</h4>
+            <button onclick="mostrarModulo('inventario')">Ver Inventario</button>
+        </div>
+        <div class="module-box">
+            <h4>Proveedores</h4>
+            <button onclick="mostrarModulo('proveedores')">Ver Proveedores</button>
+        </div>
+    </div>
+</div>
+
+<!-- Módulo de Consulta de Saldo -->
+<div class="table-container" id="consultaSaldo">
+    <h3>Consulta de Saldo</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Saldo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>01/11/2024</td><td>$500,000</td></tr>
+            <tr><td>02/11/2024</td><td>$350,000</td></tr>
+            <tr><td>03/11/2024</td><td>$450,000</td></tr>
+        </tbody>
+    </table>
+    <button class="back-btn" onclick="volverMenu()">Volver</button>
+</div>
+
+<!-- Módulo de Peticiones, Quejas y Reclamos -->
+<div class="table-container" id="peticiones">
+    <h3>Peticiones, Quejas y Reclamos</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Nombre de Usuario</th>
+                <th>Teléfono</th>
+                <th>Petición</th>
+                <th>Queja</th>
+                <th>Reclamo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>01/11/2024</td>
+                <td>Juan Pérez</td>
+                <td>123-4567890</td>
+                <td>Consulta sobre productos</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>02/11/2024</td>
+                <td>María López</td>
+                <td>987-6543210</td>
+                <td></td>
+                <td>Queja sobre el servicio</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>03/11/2024</td>
+                <td>Carlos Sánchez</td>
+                <td>555-1234567</td>
+                <td></td>
+                <td></td>
+                <td>Reclamo sobre facturación</td>
+            </tr>
+        </tbody>
+    </table>
+    <button class="back-btn" onclick="volverMenu()">Volver</button>
+</div>
+
+<!-- Módulo de Consulta de Inventario -->
+<div class="table-container" id="inventario">
+    <h3>Consulta de Inventario</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>01/11/2024</td><td>Arroz</td><td>50</td><td>$8,000</td></tr>
+            <tr><td>01/11/2024</td><td>Frijoles</td><td>20</td><td>$12,000</td></tr>
+        </tbody>
+    </table>
+    <button class="back-btn" onclick="volverMenu()">Volver</button>
+</div>
+
+<script>
+    function mostrarModulo(modulo) {
+        document.getElementById("formularioRegistro").style.display = "none";
+        document.getElementById("menu").style.display = "none";
+        document.getElementById(modulo).style.display = "block";
+        document.getElementById("logoutButton").style.display = "block";
+    }
+
+    function volverMenu() {
+        var modulos = document.querySelectorAll('.table-container');
+        modulos.forEach(function(el) {
+            el.style.display = "none";
+        });
+        document.getElementById("menu").style.display = "block";
+    }
+
+    function cerrarSesion() {
+        document.getElementById("formularioRegistro").style.display = "block";
+        document.getElementById("menu").style.display = "none";
+        document.getElementById("logoutButton").style.display = "none";
+    }
+
+    function registrarUsuario(event) {
+        event.preventDefault();
+        var nombre = document.getElementById("nombre").value;
+        var correo = document.getElementById("correo").value;
+        var contraseña = document.getElementById("contraseña").value;
+
+        if (nombre && correo && contraseña) {
+            document.getElementById("formularioRegistro").style.display = "none";
+            document.getElementById("menu").style.display = "block";
+        } else {
+            alert("Por favor complete todos los campos.");
+        }
+    }
+</script>
+
+</body>
+</html>
